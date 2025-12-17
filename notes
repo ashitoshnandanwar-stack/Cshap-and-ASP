@@ -1,0 +1,5 @@
+Stateful versus stateless methods
+In software development projects, the term state is used to describe the condition of the execution environment at a specific moment in time.
+As your code executes line by line, values are stored in variables. At any moment during execution, the current state of the application is the collection of all values stored in memory.
+Some methods don't rely on the current state of the application to work properly. 
+In other words, stateless methods are implemented so that they can work without referencing or changing any values already stored in memory. Stateless methods are also known as static methods.
