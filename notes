@@ -130,7 +130,13 @@ Methods that turn a string into an array of strings or characters (Split(), ToCh
 The Substring() method needs the starting position and the number of characters, or length, to retrieve. 
 So, you calculate the length in a temporary variable called length, and pass it with the openingPosition value to retrieve the string inside of the parenthesis.
 
+This unit covered much material. Here's the most important things to remember:
 
+IndexOf() gives you the first position of a character or string inside of another string.
+IndexOf() returns -1 if it can't find a match.
+Substring() returns just the specified portion of a string, using a starting position and optional length.
+There's often more than one way to solve a problem. You used two separate techniques to find all instances of a given character or string.
+Avoid hardcoded magic values. Instead, define a const variable. A constant variable's value can't be changed after initialization.
 The result is close, however the output includes the opening parenthesis. 
 In this exercise, the inclusion of the parenthesis isn't desired. 
 To remove the parenthesis from output, you have to update the code to skip the index of the parenthesis itself
