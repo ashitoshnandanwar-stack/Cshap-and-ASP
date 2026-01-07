@@ -39,6 +39,7 @@ Different data types of parameters
 Different order of parameters
 ⚠ Changing only return type is NOT allowed
 
+Eg.
 class Calculator
 {
     // Method 1
@@ -80,6 +81,7 @@ Optional parameters allow a method to be called without passing all arguments.
 Optional parameters must have default values
 They must appear after required parameters
 
+Eg.
 void Display(int x, int y = 10)
 {
     Console.WriteLine(x + y);
@@ -95,6 +97,7 @@ Display(5, 20);  // y = 20
 🔹 Positional Parameters
 Arguments are passed in the same order as parameters.
 
+Eg.
 void Show(int a, int b)
 {
     Console.WriteLine(a + " " + b);
@@ -123,6 +126,7 @@ Must be an array
 Only one params parameter allowed in the method
 Must be the last parameter
 
+Eg.
 int Sum(params int[] numbers)
 {
     int total = 0;
@@ -150,6 +154,7 @@ Used for helper logic
 Improves code readability
 Scope limited to outer method
 
+Eg.
 void Calculate()
 {
     int Square(int x)
@@ -161,3 +166,80 @@ void Calculate()
 }
 
 ```
+<hr>
+
+## 🔷 PROPERTIES IN C#
+- Properties are used to access class data safely.
+
+```
+1️⃣ get and set Accessors
+🔹 Definition
+get → read value
+set → assign value
+
+Eg.
+class Student
+{
+    private int age;
+
+    public int Age
+    {
+        get { return age; }
+        set { age = value; }
+    }
+}
+```
+
+```
+2️⃣ Readonly Properties
+🔹 Definition
+A readonly property allows only reading, not writing.
+
+🔹 Using only get
+✔ Value can be assigned only via constructor
+
+Eg.
+class Employee
+{
+    public int Id { get; }
+
+    public Employee(int id)
+    {
+        Id = id;
+    }
+}
+```
+
+```
+3️⃣ Creating Readonly Property using Accessors
+
+Eg.
+class Circle
+{
+    private double radius = 5;
+
+    public double Area
+    {
+        get
+        {
+            return 3.14 * radius * radius;
+        }
+    }
+}
+
+✔ No set accessor
+✔ Computed value
+✔ Read-only
+```
+
+| Topic               | Key Point                       |
+| ------------------- | ------------------------------- |
+| Method Overloading  | Same name, different parameters |
+| Optional Parameters | Default value provided          |
+| Named Parameters    | Order independent               |
+| params              | Variable arguments              |
+| Local Functions     | Method inside method            |
+| Properties          | Encapsulation                   |
+| Readonly Property   | Only `get`, no `set`            |
+
+
