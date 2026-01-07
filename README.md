@@ -122,6 +122,9 @@ Avoids confusion in methods with many parameters
 4️⃣ Using params
 🔹 Definition
 params allows passing a variable number of arguments to a method.
+params must be last parameter
+void Test(int x, params int[] y)   // ✅ Correct
+void Test(params int[] y, int x)   // ❌ ERROR
 
 🔹 Rules
 Must be an array
@@ -190,6 +193,11 @@ class Student
         set { age = value; }
     }
 }
+
+property without getter is invalid
+public int Age { get; }   // ✅ Valid
+public int Age { set; }   // ❌ Invalid
+A property MUST have get accessor.
 ```
 
 ```
@@ -354,6 +362,7 @@ class Student
 
 ✔ Called when object is created
 ✔ If no constructor is written, C# provides a default constructor
+✔ Destructor = Finalizer
 ```
 
 ```
