@@ -2218,3 +2218,185 @@ PLINQ → parallel execution
 Partial classes → compiled into one single class
 Partial method not implemented then ignored it at compile time.
 ```
+
+<hr>
+
+## 🔷 CREATING A SHARED ASSEMBLY
+
+```
+🔹 What is an Assembly?
+An assembly is a compiled code library (.dll or .exe) containing:
+IL code
+Metadata
+Manifest
+
+🔹 What is a Shared Assembly?
+A shared assembly:
+Can be used by multiple applications
+Is stored in Global Assembly Cache (GAC)
+Must have a strong name
+
+🔹 Strong Name Components
+Assembly name
+Version
+Culture
+Public key
+
+🔹 Steps to Create a Shared Assembly
+1️⃣ Create Class Library
+dotnet new classlib
+2️⃣ Generate Strong Name Key
+sn -k mykey.snk
+3️⃣ Assign Strong Name
+In project file or AssemblyInfo:
+[assembly: AssemblyKeyFile("mykey.snk")]
+4️⃣ Build DLL
+5️⃣ Install into GAC
+gacutil -i MyLibrary.dll
+
+🔑 Exam Points
+Shared assemblies require strong name
+GAC stores shared assemblies
+Versioning avoids conflicts
+```
+
+### 🔷 CREATING CUSTOM ATTRIBUTES
+```
+🔹 What is an Attribute?
+An attribute adds metadata to code (class, method, property).
+
+🔹 Built-in Attributes Examples
+[Obsolete]
+[Serializable]
+
+🔹 Creating Custom Attribute
+Rule
+Must inherit from System.Attribute
+
+Example
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+class InfoAttribute : Attribute
+{
+    public string Author { get; }
+
+    public InfoAttribute(string author)
+    {
+        Author = author;
+    }
+}
+
+Using Custom Attribute
+[Info("CDAC")]
+class Test
+{
+}
+
+🔑 Exam Rule
+Custom attributes are used with reflection
+```
+
+### 🔷 USING REFLECTION TO EXPLORE AN ASSEMBLY
+```
+🔹 What is Reflection?
+Reflection allows inspecting:
+Assemblies
+Types
+Methods
+Properties
+Attributes
+👉 At runtime
+
+🔹 Basic Reflection Example
+using System.Reflection;
+
+Assembly asm = Assembly.GetExecutingAssembly();
+Type[] types = asm.GetTypes();
+
+foreach (Type t in types)
+{
+    Console.WriteLine(t.Name);
+}
+
+🔑 Exam Points
+Namespace: System.Reflection
+Used for metadata inspection
+Slower than normal calls
+
+```
+
+### 🔷 USING REFLECTION TO LOAD AN ASSEMBLY DYNAMICALLY
+```
+🔹 Why Dynamic Loading?
+Plugin systems
+Late binding
+Reduce dependencies
+
+🔹 Example
+Assembly asm = Assembly.LoadFrom("MyLibrary.dll");
+Type t = asm.GetType("MyLibrary.Test");
+object obj = Activator.CreateInstance(t);
+
+🔑 Exam Rule
+Assembly.LoadFrom() loads assembly at runtime
+```
+
+### 🔷 FILES I/O AND STREAMS
+```
+🔹 What is Stream?
+A stream is a sequence of bytes for
+Reading
+Writing data
+
+🔹 Important Stream Classes
+FileStream
+StreamReader
+StreamWriter
+BinaryReader
+BinaryWriter
+```
+
+### 🔷 WORKING WITH DRIVES, DIRECTORIES, AND FILES
+```
+🔹 DriveInfo
+DriveInfo[] drives = DriveInfo.GetDrives();
+
+🔹 Directory Class
+Directory.CreateDirectory("C:\\Data");
+
+🔹 File Class
+File.WriteAllText("a.txt", "Hello");
+string data = File.ReadAllText("a.txt");
+
+🔑 Exam Rule
+File, Directory, DriveInfo are static helper classes
+```
+
+### 🔷 READING AND WRITING FILES
+```
+🔹 Using StreamWriter
+using (StreamWriter sw = new StreamWriter("data.txt"))
+{
+    sw.WriteLine("Hello CDAC");
+}
+
+🔹 Using StreamReader
+using (StreamReader sr = new StreamReader("data.txt"))
+{
+    string text = sr.ReadLine();
+}
+
+🔑 Best Practice
+Use using statement to ensure resource cleanup
+```
+```
+🔑 QUICK EXAM SUMMARY
+Shared assembly → Strong name + GAC
+Custom attribute → inherits Attribute
+Reflection → runtime metadata
+Dynamic loading → Assembly.LoadFrom
+Stream → byte flow
+File I/O → File, Directory, StreamReader/Writer
+```
+
+<hr>
+
