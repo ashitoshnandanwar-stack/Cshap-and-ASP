@@ -242,4 +242,87 @@ class Circle
 | Properties          | Encapsulation                   |
 | Readonly Property   | Only `get`, no `set`            |
 
+<hr>
 
+## Encapsulation
+- Encapsulation = Hidden Data + Access Through Methods/Properties
+
+```
+✅ Hidden Data (Private)
+class Student
+{
+    private int marks;  // 🔒 HIDDEN - Cannot access directly from outside
+}
+```
+```
+✅ Access Through Methods
+class Student
+{
+    private int marks;  // 🔒 Hidden
+    
+    // Access through PUBLIC METHODS
+    public void SetMarks(int m)  // ✅ Method to SET data
+    {
+        if(m >= 0 && m <= 100)
+            marks = m;
+    }
+    
+    public int GetMarks()  // ✅ Method to GET data
+    {
+        return marks;
+    }
+}
+
+// Usage
+Student s = new Student();
+s.SetMarks(85);  // ✅ Access through method
+Console.WriteLine(s.GetMarks());  // ✅ Access through method
+
+// s.marks = 85;  // ❌ ERROR! Cannot access directly
+```
+```
+✅ Access Through Properties (Getter/Setter)
+class Student
+{
+    private int marks;  // 🔒 Hidden
+    
+    // Access through PUBLIC PROPERTY (Getter/Setter)
+    public int Marks
+    {
+        get { return marks; }     // ✅ Getter
+        set                        // ✅ Setter
+        { 
+            if(value >= 0 && value <= 100)
+                marks = value; 
+        }
+    }
+}
+
+// Usage
+Student s = new Student();
+s.Marks = 85;  // ✅ Access through setter
+Console.WriteLine(s.Marks);  // ✅ Access through getter
+
+// s.marks = 85;  // ❌ ERROR! Cannot access directly
+```
+
+---
+
+## Simple Visual Understanding 🎯
+
+┌─────────────────────────────────────┐
+│          CLASS (Student)            │
+│                                     │
+│    private int marks;  (HIDDEN)     │
+│                                     │
+│   ┌─────────────────────────────┐   │
+│   │  PUBLIC DOOR (Methods)      │   │
+│   │                             │   │
+│   │  SetMarks() ← Enter here    │   │
+│   │  GetMarks() ← Exit here     │   │
+│   └─────────────────────────────┘   │
+└─────────────────────────────────────┘
+        ↑
+        │
+    Outside world can only use these methods
+    Cannot directly touch the marks variable
