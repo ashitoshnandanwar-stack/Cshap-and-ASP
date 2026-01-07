@@ -26,3 +26,48 @@ To examine the assembly manifest (name, version, references)
 For debugging, learning, and security analysis
 
 ```
+## 🔷 METHODS IN C#
+
+```
+1️⃣ Method Overloading
+🔹 Definition
+Method Overloading means having multiple methods with the same name but different parameter lists.
+
+🔹 Conditions for Overloading
+Different number of parameters
+Different data types of parameters
+Different order of parameters
+⚠ Changing only return type is NOT allowed
+
+class Calculator
+{
+    // Method 1
+    public int Calculate(int a, int b)
+    {
+        return a + b;
+    }
+    
+    // Method 2 - ERROR! Cannot overload based on return type alone
+    public double Calculate(int a, int b)  // ❌ COMPILATION ERROR
+    {
+        return a + b;
+    }
+}
+
+class Calculator
+{
+    public int Calculate(int a, int b)
+    {
+        return a + b;
+    }
+    
+    public int Calculate(int a, int b, int c)  // ✅ Different parameter count
+    {
+        return a + b + c;
+    }
+}
+
+// Usage
+calc.Calculate(5, 10);      // Calls first method
+calc.Calculate(5, 10, 15);  // Calls second method
+```
