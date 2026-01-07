@@ -1588,7 +1588,7 @@ Advantages
 
 ```
 
-### ICollection, IList, IDictionary (IMPORTANT)
+### 🔷 ICollection, IList, IDictionary (IMPORTANT)
 ```
 🔹 ICollection
 Base interface for collections
