@@ -1460,5 +1460,234 @@ Rank = number of dimensions
 
 <hr>
 
+## 🔷 GENERICS IN C#
+
+### 🔹 Why Generics?
+```
+Generics allow you to:
+Write type-safe code
+Avoid boxing/unboxing
+Improve performance
+Reuse code for multiple data types
+
+# What is Boxing and Unboxing?
+🔸 Boxing
+Converting a value type (int, double, struct) into an object type
+int x = 10;
+object obj = x;   // BOXING
+
+🔸 Unboxing
+Converting an object type back to value type
+int y = (int)obj;   // UNBOXING
+
+⚠ These operations:
+Use extra memory
+Are slow
+Can cause runtime exceptions
+```
+
+### 🔹 GENERIC CLASSES
+```
+✅ Definition
+A generic class works with a type parameter instead of a fixed data type.
+Example
+class Box<T>
+{
+    public T Value;
+}
+Box<int> b1 = new Box<int>();
+b1.Value = 10;
+
+Box<string> b2 = new Box<string>();
+b2.Value = "CDAC";
+
+🔑 Exam Points
+T is a type parameter
+Same class works for multiple data types
+Type safety ensured at compile time
+```
+
+### 🔹 GENERIC METHODS
+```
+✅ Definition
+A generic method defines type parameters at method level, not class level.
+
+Example
+class Test
+{
+    public void Show<T>(T data)
+    {
+        Console.WriteLine(data);
+    }
+}
+
+Test t = new Test();
+t.Show<int>(100);
+t.Show<string>("Hello");
+
+🔑 Exam Trap
+Generic method can exist inside non-generic class
+```
+
+### 🔹 GENERIC CONSTRAINTS
+```
+✅ Definition
+Constraints restrict what types can be used with generics.
+
+Common Constraints
+| **Constraint Syntax**  | **Meaning**                                          | **Allowed Types (Examples)**     |
+| ---------------------- | ---------------------------------------------------- | -------------------------------- |
+| `where T : class`      | `T` must be a **reference type**                     | `string`, `object`, custom class |
+| `where T : struct`     | `T` must be a **value type**                         | `int`, `double`, `DateTime`      |
+| `where T : new()`      | `T` must have a **public parameterless constructor** | `class A { public A(){} }`       |
+| `where T : BaseClass`  | `T` must **inherit from a base class**               | `class Dog : Animal {}`          |
+| `where T : IInterface` | `T` must **implement an interface**                  | `class A : IPrintable {}`        |
 
 
+Example
+class Sample<T> where T : class
+{
+    public T obj;
+}
+
+Multiple Constraints
+✔ You can apply more than one constraint
+class Manager<T> where T : class, IPrintable, new()
+{
+}
+```
+
+### 🔷 COLLECTIONS IN C#
+```
+🔹 Why Collections?
+Collections store multiple elements dynamically (size can grow/shrink).
+
+🔹 NON-GENERIC COLLECTIONS (System.Collections)
+| Collection  | Stores             |
+| ----------- | ------------------ |
+| `ArrayList` | object             |
+| `Hashtable` | key–value (object) |
+| `Stack`     | object             |
+| `Queue`     | object             |
+
+Drawback
+❌ No type safety
+❌ Boxing / Unboxing overhead
+
+🔹 GENERIC COLLECTIONS (System.Collections.Generic)
+| Collection                | Stores    |
+| ------------------------- | --------- |
+| `List<T>`                 | T         |
+| `Dictionary<TKey,TValue>` | key–value |
+| `Stack<T>`                | T         |
+| `Queue<T>`                | T         |
+
+Advantages
+✔ Type safe
+✔ Better performance
+
+```
+
+### ICollection, IList, IDictionary (IMPORTANT)
+```
+🔹 ICollection
+Base interface for collections
+Supports basic operations
+
+Example:
+ICollection<int> col = new List<int>();
+col.Add(10);
+col.Add(20);
+
+Methods:
+Add()
+Remove()
+Count
+
+🔹 IList
+Ordered collection
+Allows index-based access
+
+Example
+IList<string> list = new List<string>();
+list.Add("A");
+list.Add("B");
+Console.WriteLine(list[0]);
+
+🔹 IDictionary
+Stores key–value pairs
+Keys must be unique
+
+Generic Example
+IDictionary<int, string> dict = new Dictionary<int, string>();
+dict.Add(1, "One");
+
+Non-Generic Example
+IDictionary ht = new Hashtable();
+ht.Add(1, "One");
+```
+
+### 🔷 ITERATING COLLECTIONS USING foreach
+```
+✅ Rule
+All collections implementing IEnumerable can be iterated using foreach.
+
+Example
+List<int> nums = new List<int> {1,2,3};
+foreach (int n in nums)
+{
+    Console.WriteLine(n);
+}
+
+🔑 Exam Rule
+foreach is read-only (cannot modify collection structure)
+```
+
+### 🔷 TUPLES (Passing Multiple Values)
+```
+🔹 Why Tuples?
+To return or pass multiple values from/to a method without creating a class.
+
+🔹 Using Tuple (Old Style)
+Tuple<int, string> GetData()
+{
+    return Tuple.Create(1, "CDAC");
+}
+
+🔹 ValueTuple (Modern, Recommended)
+(int, string) GetInfo()
+{
+    return (101, "Amit");
+}
+
+Call:
+var data = GetInfo();
+Console.WriteLine(data.Item1);
+Console.WriteLine(data.Item2);
+
+🔹 Named Tuple Elements
+(int id, string name) GetStudent()
+{
+    return (id: 1, name: "Ravi");
+}
+
+Access:
+Console.WriteLine(data.id);
+```
+
+```
+🔑 QUICK EXAM SUMMARY
+Generics → type safety + performance
+Generic class → <T> at class level
+Generic method → <T> at method level
+Constraints → restrict generic types
+Non-generic collections → object based
+Generic collections → type safe
+ICollection → basic operations
+IList → index based
+IDictionary → key–value pairs
+foreach → iteration only
+Tuples → return multiple values
+```
+
+<hr>
