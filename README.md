@@ -2406,3 +2406,296 @@ Read full file → File.ReadAllText()
 
 <hr>
 
+## 🔷 THREADING IN C#
+```
+🔹 What is Threading?
+Threading allows a program to perform multiple tasks concurrently within the same process.
+Process → running program
+Thread → smallest unit of execution inside a process
+```
+
+### 🔷 ThreadStart & ParameterizedThreadStart
+```
+🔹 ThreadStart
+Used when the thread method does not take parameters.
+
+Example
+using System.Threading;
+class Test
+{
+    static void Print()
+    {
+        Console.WriteLine("Thread running");
+    }
+
+    static void Main()
+    {
+        Thread t = new Thread(new ThreadStart(Print));
+        t.Start();
+    }
+}
+
+✔ No parameters
+✔ Returns void
+
+🔹 ParameterizedThreadStart
+Used when the thread method takes one parameter (object type).
+
+Example
+static void Show(object msg)
+{
+    Console.WriteLine(msg);
+}
+
+Thread t = new Thread(new ParameterizedThreadStart(Show));
+t.Start("Hello Thread");
+
+🔑 Exam Rule
+ParameterizedThreadStart accepts only one object parameter
+
+🔹 What You CANNOT Do ❌
+void Print(int a, int b)   // ❌ Not allowed
+{
+}
+t.Start(10, 20);   // ❌ Not allowed
+
+📌 Because ParameterizedThreadStart allows only one object parameter.
+
+🔹 How to Pass Multiple Values? (Exam Tip ⭐)
+✅ Solution 1: Use an object (class)
+class Data
+{
+    public int A;
+    public int B;
+}
+static void Print(object obj)
+{
+    Data d = (Data)obj;
+    Console.WriteLine(d.A + d.B);
+}
+t.Start(new Data { A = 5, B = 10 });
+
+✅ Solution 2: Use Tuple
+t.Start(Tuple.Create(5, 10));
+
+```
+
+### 🔷 THREADPOOL
+```
+🔹 What is ThreadPool?
+A ThreadPool is a collection of pre-created threads maintained by the CLR that can be reused to execute multiple tasks.
+📌 Instead of creating a new thread every time, the system reuses existing threads.
+✔ Reuses threads
+✔ Improves performance
+✔ Reduces overhead
+
+Example
+ThreadPool.QueueUserWorkItem(
+    state => Console.WriteLine("ThreadPool thread")
+);
+
+🔑 Exam Points
+Threads are managed by CLR
+Cannot set priority or name
+Best for short-lived tasks
+
+🔹 Real-Time Example (Easy to Imagine)
+🏦 Bank Counter Example
+Bank has 5 counters (threads)
+Customers (tasks) keep coming
+A customer is assigned to any free counter
+After service, counter becomes free again
+📌 Counters are not destroyed, they are reused
+➡️ This is exactly how ThreadPool works.
+
+🔹 Basic ThreadPool Example
+using System;
+using System.Threading;
+
+class Program
+{
+    static void DoWork(object state)
+    {
+        Console.WriteLine(
+            $"Task {state} executed by Thread ID {Thread.CurrentThread.ManagedThreadId}");
+    }
+
+    static void Main()
+    {
+        for (int i = 1; i <= 5; i++)
+        {
+            ThreadPool.QueueUserWorkItem(DoWork, i);
+        }
+
+        Console.ReadLine();
+    }
+}
+
+🔹 Output (Example)
+Task 1 executed by Thread ID 5
+Task 2 executed by Thread ID 6
+Task 3 executed by Thread ID 5
+Task 4 executed by Thread ID 6
+
+📌 Same thread IDs reused → Thread reuse
+
+```
+
+### 🔷 SYNCHRONIZATION (CRITICAL SECTION)
+```
+Synchronization is the technique used to control access to shared resources when multiple threads are running at the same time.
+It ensures that only one thread at a time can execute a critical section.
+
+🔹 What is a Critical Section?
+A critical section is a part of code that accesses shared data and must not be executed by more than one thread at the same time.
+
+🔹 Real-Time Example (Very Easy)
+🏦 Bank Account Example
+Shared resource → Account balance
+Two threads → Withdraw money
+If both access at same time → Wrong balance
+👉 Withdraw operation = Critical Section
+```
+
+#### 🔹 lock Keyword
+```
+Example
+object obj = new object();
+lock (obj)
+{
+    // critical section
+}
+🔹 Problem WITHOUT Synchronization ❌
+using System;
+using System.Threading;
+class BankAccount
+{
+    public int Balance = 1000;
+
+    public void Withdraw(int amount)
+    {
+        if (Balance >= amount)
+        {
+            Thread.Sleep(100); // simulate delay
+            Balance -= amount;
+            Console.WriteLine($"Withdrawn {amount}, Balance = {Balance}");
+        }
+    }
+}
+class Program
+{
+    static void Main()
+    {
+        BankAccount acc = new BankAccount();
+
+        Thread t1 = new Thread(() => acc.Withdraw(700));
+        Thread t2 = new Thread(() => acc.Withdraw(700));
+
+        t1.Start();
+        t2.Start();
+
+        t1.Join();
+        t2.Join();
+    }
+}
+❌ Output (Wrong)
+Withdrawn 700, Balance = 300
+Withdrawn 700, Balance = -400
+
+📌 Race condition occurred
+✔ Simplest synchronization
+✔ Prevents race conditions
+
+
+🔹 Solution: Synchronization using lock ✅
+class BankAccount
+{
+    public int Balance = 1000;
+    private readonly object lockObj = new object();
+
+    public void Withdraw(int amount)
+    {
+        lock (lockObj)   // 🔐 Critical Section
+        {
+            if (Balance >= amount)
+            {
+                Thread.Sleep(100);
+                Balance -= amount;
+                Console.WriteLine($"Withdrawn {amount}, Balance = {Balance}");
+            }
+        }
+    }
+}
+
+✅ Output (Correct)
+Withdrawn 700, Balance = 300
+
+🔹 How lock Works?
+lock(obj)
+{
+   // critical section
+}
+✔ Only one thread enters
+✔ Other threads wait
+✔ Lock released after block ends
+```
+
+| Method        | Use               |
+| ------------- | ----------------- |
+| `lock`        | Most common       |
+| `Monitor`     | Advanced control  |
+| `Mutex`       | Cross-process     |
+| `Semaphore`   | Limited access    |
+| `Interlocked` | Simple atomic ops |
+
+
+#### 🔹 Monitor Class
+```
+Monitor is a synchronization class in C# used to control access to a shared resource so that only one thread can execute a critical section at a time.
+📌 Important:
+lock is just a simplified wrapper around Monitor.
+More control than lock.
+
+Monitor.Enter(obj);
+try
+{
+    // critical section
+}
+finally
+{
+    Monitor.Exit(obj);
+}
+
+🔑 Exam Rule
+lock is syntactic sugar over Monitor
+👉 Same behavior, but Monitor is more powerful.
+
+```
+#### 🔹 Interlocked Class
+```
+Interlocked is a thread-synchronization class in C# that provides atomic (indivisible) operations on shared variables.
+📌 It ensures that simple operations (increment, decrement, add, exchange) are performed safely when multiple threads access the same variable.
+Used for atomic operations
+Faster than lock
+Works on simple variables
+
+Example
+Interlocked.Increment(ref count);
+
+🔹 Real-Time Example (Easy to Imagine)
+🧮 Website Visitor Counter
+Many users open a website at the same time
+Shared variable → visitor count
+Each request increments the count
+📌 Increment must be atomic.
+
+🔑 Exam Rule
+Interlocked → atomic operations, no blocking
+With Interlocked:
+✔ Fast
+✔ Lock-free
+✔ Thread-safe
+
+```
+
+<hr>
