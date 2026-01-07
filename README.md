@@ -248,6 +248,7 @@ class Circle
 
 ## Encapsulation
 - Encapsulation = Hidden Data + Access Through Methods/Properties
+- hiding the internal details from the outside world.
 
 ```
 ✅ Hidden Data (Private)
