@@ -71,3 +71,93 @@ class Calculator
 calc.Calculate(5, 10);      // Calls first method
 calc.Calculate(5, 10, 15);  // Calls second method
 ```
+```
+2️⃣ Optional Parameters
+🔹 Definition
+Optional parameters allow a method to be called without passing all arguments.
+
+🔹 Rule
+Optional parameters must have default values
+They must appear after required parameters
+
+void Display(int x, int y = 10)
+{
+    Console.WriteLine(x + y);
+}
+
+Display(5);      // y = 10
+Display(5, 20);  // y = 20
+```
+
+```
+3️⃣ Named Parameters & Positional Parameters
+
+🔹 Positional Parameters
+Arguments are passed in the same order as parameters.
+
+void Show(int a, int b)
+{
+    Console.WriteLine(a + " " + b);
+}
+
+Show(10, 20);
+
+🔹 Named Parameters
+Arguments are passed using parameter names, order does not matter.
+
+Show(b: 20, a: 10);
+
+🔹 Benefits of Named Parameters
+Improves readability
+Avoids confusion in methods with many parameters
+
+```
+
+```
+4️⃣ Using params
+🔹 Definition
+params allows passing a variable number of arguments to a method.
+
+🔹 Rules
+Must be an array
+Only one params parameter allowed in the method
+Must be the last parameter
+
+int Sum(params int[] numbers)
+{
+    int total = 0;
+    foreach (int n in numbers)
+        total += n;
+    return total;
+}
+
+Sum(1, 2, 3); //6
+Sum(10, 20, 30, 40);  //100
+Sum();   //no output
+
+🔹 Internally
+Sum(1,2,3) → Sum(new int[]{1,2,3});
+
+```
+
+```
+5️⃣ Local Functions
+🔹 Definition
+A local function is a method defined inside another method.
+
+🔹 Purpose
+Used for helper logic
+Improves code readability
+Scope limited to outer method
+
+void Calculate()
+{
+    int Square(int x)
+    {
+        return x * x;
+    }
+
+    Console.WriteLine(Square(5));
+}
+
+```
