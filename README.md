@@ -929,3 +929,223 @@ Order of parameters
 
 🔴 Return type is NOT part of the method signature
 ```
+<hr>
+
+## 🔷 INTERFACES IN C#
+```
+🔹 What is an Interface?
+An interface is a contract that defines what a class must do, not how it does it.
+
+🔹 Key Characteristics
+Contains method declarations, not implementations (mostly)
+Supports multiple inheritance
+All members are public by default
+Cannot be instantiated
+
+🔹 Interface Syntax
+interface IShape
+{
+    void Draw();
+}
+
+class Circle : IShape
+{
+    public void Draw()
+    {
+        Console.WriteLine("Drawing Circle");
+    }
+}
+
+🔹 Exam Rules (VERY IMPORTANT)
+Interface name usually starts with I
+Methods have no body (except default methods)
+A class must implement all interface methods
+
+```
+
+### 🔷 IMPLEMENTING AN INTERFACE
+```
+🔹 Rule
+When a class implements an interface:
+It must implement all methods
+Methods must be public
+
+🔹 Example
+interface IPrinter
+{
+    void Print();
+}
+
+class LaserPrinter : IPrinter
+{
+    public void Print()
+    {
+        Console.WriteLine("Printing...");
+    }
+}
+
+🔑 Exam Trap
+❌ Missing public causes compile-time error
+```
+
+### 🔷 EXPLICIT INTERFACE IMPLEMENTATION
+```
+🔹 Why Explicit Implementation?
+Used when:
+Two interfaces have same method name
+You want to hide interface method from class object
+
+🔹 Example
+interface IA
+{
+    void Show();
+}
+
+interface IB
+{
+    void Show();
+}
+
+class Test : IA, IB
+{
+    void IA.Show()
+    {
+        Console.WriteLine("IA Show");
+    }
+
+    void IB.Show()
+    {
+        Console.WriteLine("IB Show");
+    }
+}
+
+🔹 Method Call
+IA a = new Test();
+a.Show();   // IA Show
+
+IB b = new Test();
+b.Show();   // IB Show
+
+🔑 Exam Rule
+Explicit interface methods cannot be called using class object
+
+```
+
+### 🔷 INHERITANCE IN INTERFACES
+```
+🔹 Rule
+One interface can inherit multiple interfaces
+Interfaces inherit only declarations, not implementations
+
+🔹 Example
+interface IA
+{
+    void A();
+}
+
+interface IB
+{
+    void B();
+}
+
+interface IC : IA, IB
+{
+    void C();
+}
+
+class Demo : IC
+{
+    public void A() { }
+    public void B() { }
+    public void C() { }
+}
+
+🔑 Exam Point
+Interfaces support multiple inheritance
+```
+
+### 🔷 DEFAULT INTERFACE METHODS (C# 8.0+)
+```
+🔹 What are Default Interface Methods?
+Interface methods with implementation.
+
+🔹 Why Introduced?
+To add new methods to interface without breaking existing classes
+
+🔹 Example
+interface ILogger
+{
+    void Log(string msg);
+
+    void Info()
+    {
+        Console.WriteLine("Info log");
+    }
+}
+
+class AppLogger : ILogger
+{
+    public void Log(string msg)
+    {
+        Console.WriteLine(msg);
+    }
+}
+
+
+✔ Info() need NOT be implemented
+✔ Can be overridden if needed
+
+🔑 Exam Trap
+Default methods cannot access instance fields
+Called using interface reference
+
+```
+
+### 🔷 OPERATOR OVERLOADING
+```
+🔹 What is Operator Overloading?
+Operator overloading allows custom behavior for operators (+, -, ==, etc.) for user-defined types.
+
+🔹 Rules
+Only operators can be overloaded
+At least one operand must be user-defined
+Cannot overload . ?: sizeof
+
+🔹 Syntax
+class Point
+{
+    public int x, y;
+
+    public Point(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    public static Point operator +(Point a, Point b)
+    {
+        return new Point(a.x + b.x, a.y + b.y);
+    }
+}
+
+🔹 Usage
+Point p1 = new Point(2, 3);
+Point p2 = new Point(4, 5);
+
+Point p3 = p1 + p2;  // operator + called
+
+🔑 Operator Overloading Rules (MCQ FAVORITE)
+Must be static
+Cannot change operator precedence
+Cannot overload new operators
+```
+
+| Feature              | Interface   | Abstract Class |
+| -------------------- | ----------- | -------------- |
+| Multiple inheritance |  Yes        |  No            |
+| Constructors         |  No         |  Yes           |
+| Fields               |  No         |  Yes           |
+| Default methods      |  Yes        |  No            |
+| Access modifier      | Public only |  Any           |
+
+<hr>
