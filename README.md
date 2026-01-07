@@ -1840,3 +1840,192 @@ Lambda → concise anonymous method
 Lambdas heavily used in LINQ
 Lambdas are based on delegates ✅
 ```
+
+<hr>
+
+## 🔷 ERROR HANDLING (EXCEPTION HANDLING) IN C#
+```
+🔹 What is an Exception?
+An exception is a runtime error that disrupts the normal flow of program execution.
+Examples
+Divide by zero
+File not found
+Null reference
+
+Java supports both checked and unchecked exceptions, whereas C# treats all exceptions as unchecked and handles them at runtime.
+```
+
+### 🔷 CHECKED & UNCHECKED STATEMENTS (C# CONTEXT)
+```
+⚠️ Important CCEE Note
+In Java, we have checked and unchecked exceptions.
+In C#, ALL exceptions are unchecked (runtime).
+👉 However, for exam understanding, they may still ask conceptually:
+
+🔹 Checked (Conceptual)
+Detected at compile time
+Must be handled
+Example (Java): IOException
+
+🔹 Unchecked (C# Reality)
+Detected at runtime
+Not forced to handle
+
+🔑 Exam Line
+C# does NOT have checked exceptions; all exceptions are runtime (unchecked).
+```
+
+### 🔷 TRY – CATCH – FINALLY
+```
+🔹 try block
+Code that may cause exception
+
+try
+{
+    int x = 10 / 0;
+}
+
+🔹 catch block
+Handles the exception
+
+catch (DivideByZeroException ex)
+{
+    Console.WriteLine(ex.Message);
+}
+
+🔹 finally block
+Executes always
+Used for resource cleanup
+
+finally
+{
+    Console.WriteLine("Cleanup code");
+}
+
+🔹 Full Example
+try
+{
+    int a = 10, b = 0;
+    Console.WriteLine(a / b);
+}
+catch (DivideByZeroException)
+{
+    Console.WriteLine("Divide by zero error");
+}
+finally
+{
+    Console.WriteLine("End of program");
+}
+
+🔑 Exam Rules
+try must have catch or finally
+Multiple catch blocks allowed
+finally executes even if exception occurs
+```
+
+### 🔷 DOs & DON’Ts OF EXCEPTION HANDLING
+```
+✅ DOs
+Catch specific exceptions first
+Use finally or using for cleanup
+Log exceptions properly
+Use custom exceptions for business logic
+
+❌ DON’Ts
+Do NOT use exceptions for normal flow
+Do NOT catch Exception unnecessarily
+Do NOT swallow exceptions (empty catch)
+Do NOT throw base Exception class
+```
+
+### 🔷 USER DEFINED EXCEPTION CLASSES
+```
+🔹 Why Custom Exceptions?
+Represent business logic errors
+Improve readability and debugging
+
+🔹 How to Create User Defined Exception
+Rule
+Must inherit from Exception
+
+Example
+class InvalidAgeException : Exception
+{
+    public InvalidAgeException(string message) : base(message)
+    {
+    }
+}
+
+🔹 Throwing User Defined Exception
+static void CheckAge(int age)
+{
+    if (age < 18)
+        throw new InvalidAgeException("Age must be 18 or above");
+}
+
+🔑 Exam Rule
+Custom exception class must inherit from Exception
+```
+
+### 🔷 EVENTS IN C#
+```
+🔹 What is an Event?
+An event is a mechanism to notify other parts of program when something happens.
+👉 Events are based on delegates.
+
+🔷 DECLARING EVENTS
+🔹 Steps
+1️⃣ Declare delegate
+delegate void Notify();
+
+2️⃣ Declare event
+event Notify OnNotify;
+
+Example
+class Publisher
+{
+    public delegate void Notify();
+    public event Notify OnProcessComplete;
+
+    public void StartProcess()
+    {
+        Console.WriteLine("Process started");
+        OnProcessComplete?.Invoke();
+    }
+}
+
+🔷 HANDLING EVENTS (SUBSCRIBING)
+🔹 Subscriber Class
+class Subscriber
+{
+    public void ShowMessage()
+    {
+        Console.WriteLine("Event handled");
+    }
+}
+
+🔹 Event Subscription
+Publisher p = new Publisher();
+Subscriber s = new Subscriber();
+
+p.OnProcessComplete += s.ShowMessage;
+p.StartProcess();
+
+🔑 Exam Rules (EVENTS)
+Events use delegate
++= to subscribe
+-= to unsubscribe
+?.Invoke() prevents NullReferenceException
+```
+
+```
+🔑 QUICK EXAM SUMMARY
+All C# exceptions → runtime
+try → risky code
+catch → handle error
+finally → always executes
+Custom exception → inherit Exception
+throw → raise exception
+Events → notification mechanism
+Events based on delegates
+```
