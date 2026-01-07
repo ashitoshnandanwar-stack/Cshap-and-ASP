@@ -2396,6 +2396,12 @@ Reflection → runtime metadata
 Dynamic loading → Assembly.LoadFrom
 Stream → byte flow
 File I/O → File, Directory, StreamReader/Writer
+Strong name key → sn.exe
+Custom attribute → inherits Attribute
+Dynamic loading → Load / LoadFrom / LoadFile
+Dynamic object creation → Activator
+Stream → Bytes
+Read full file → File.ReadAllText()
 ```
 
 <hr>
