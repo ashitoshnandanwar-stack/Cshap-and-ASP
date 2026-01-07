@@ -504,3 +504,171 @@ using (FileHandler fh = new FileHandler())
 | GC dependent      | Developer controlled |
 | Slow              | Fast                 |
 | Backup cleanup    | Primary cleanup      |
+
+<hr>
+
+## 🔷 STATIC MEMBERS OF A CLASS (C#)
+```
+🔹 What does static mean?
+static members belong to the class, not to objects.
+Only one copy exists in memory.
+Accessed using ClassName, not object.
+```
+```
+🔹 STATIC FIELDS
+✅ Definition
+A static field is a variable shared by all objects of a class.
+
+✅ Example
+class Student
+{
+    public static int count = 0;
+
+    public Student()
+    {
+        count++;
+    }
+}
+
+Student s1 = new Student();
+Student s2 = new Student();
+
+Console.WriteLine(Student.count); // 2
+
+🔑 Exam Points
+Single copy for whole class
+Used for common data
+Initialized only once
+```
+
+```
+🔹 STATIC METHODS
+✅ Definition
+A static method:
+Can be called without creating object
+Can access only static members
+
+✅ Example
+class MathUtils
+{
+    public static int Add(int a, int b)
+    {
+        return a + b;
+    }
+}
+
+Console.WriteLine(MathUtils.Add(10, 20));
+
+Static methods cannot access instance members directly
+```
+
+```
+🔹 STATIC PROPERTIES
+✅ Definition
+
+A static property belongs to the class and accesses static data.
+
+✅ Example
+class Company
+{
+    private static string name;
+
+    public static string Name
+    {
+        get { return name; }
+        set { name = value; }
+    }
+}
+
+Company.Name = "CDAC";
+Console.WriteLine(Company.Name);
+
+🔑 Exam Points
+Uses get / set
+Accessed via class name
+Used for global-like values
+```
+```
+🔹 STATIC CONSTRUCTORS
+✅ Definition
+
+A static constructor initializes static members.
+
+✅ Example
+class Demo
+{
+    static int x;
+
+    static Demo()
+    {
+        x = 100;
+    }
+}
+
+🔑 RULES (VERY IMPORTANT)
+Runs only once
+No parameters
+No access modifiers
+Called automatically
+Executes before first object or static access
+```
+
+```
+🔹 STATIC CLASSES
+✅ Definition
+A static class:
+Contains only static members
+Cannot be instantiated using object
+Cannot be inherited
+
+✅ Example
+static class Utility
+{
+    public static void Show()
+    {
+        Console.WriteLine("Static class");
+    }
+}
+
+Utility.Show();
+
+❌ Invalid
+Utility u = new Utility(); // ❌ ERROR
+```
+```
+🔹 STATIC LOCAL FUNCTIONS
+✅ Definition
+A static local function:
+Is defined inside a method
+Can access only static variables
+Cannot capture local variables
+
+✅ Example
+class Test
+{
+    static int x = 10;
+
+    static void Display()
+    {
+        static int Square(int n)
+        {
+            return n * n;
+        }
+
+        Console.WriteLine(Square(x));
+    }
+}
+
+🔑 Why Static Local Functions?
+Better performance
+Avoid capturing outer variables
+Clear scope
+
+```
+
+| Feature       | Static           | Instance        |
+| ------------- | ---------------- | --------------- |
+| Belongs to    | Class            | Object          |
+| Memory        | One copy         | Multiple copies |
+| Access        | ClassName.Member | Object.Member   |
+| Object needed |  No              |  Yes            |
