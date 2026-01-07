@@ -810,12 +810,27 @@ class Derived : Base
     }
 }
 
+Method hiding happens when:
+Derived class defines a method with same signature
+Uses new keyword
+
+class Base
+{
+    public void Display() { }
+}
+
+class Derived : Base
+{
+    public new void Display() { }
+}
+
+⭐ Exam Rule
+Method hiding → uses new, not virtual
 🔹 Method Call
 Base b = new Derived();
 b.Show();   // Derived
 
 🔑 Exam Rule
-
 Overriding supports runtime polymorphism
 ```
 
