@@ -903,3 +903,14 @@ sealed class Security { }
 | Polymorphism | Compile-time | Runtime            | Compile-time |
 | Keywords     | None         | virtual + override | new          |
 | Signature    | Different    | Same               | Same         |
+
+```
+What does different signature mean?
+A method signature consists of:
+Method name
+Number of parameters
+Type of parameters
+Order of parameters
+
+🔴 Return type is NOT part of the method signature
+```
