@@ -119,11 +119,150 @@ for ASP.net
 - web server(IIS - Internet Information Services) 
 
 
+<hr>
 
+## 1️⃣ Data Management with ADO.NET – Overview
 
+```
+ADO.NET is a data access technology used in .NET applications to interact with databases such as SQL Server, Oracle, MySQL, etc.
+Key Features
+Works in connected and disconnected modes
+High performance
+Supports asynchronous operations
+Uses XML-based DataSet
+Provider-based architecture
+```
 
+## 🔷 ADO.NET Data Access Models
 
+ADO.NET supports two ways to work with data: <br>
+1️⃣ Connected Architecture <br>
+2️⃣ Disconnected Architecture <br>
 
+1️⃣ Connected ADO.NET Architecture
+
+```
+🔹 What is Connected Architecture?
+The database connection remains OPEN
+Data is read directly from database
+Uses SqlDataReader
+Very fast and memory efficient
+
+🔹 Components Used
+SqlConnection
+SqlCommand
+SqlDataReader
+
+🔹 Flow (Exam-Friendly)
+Open Connection
+   ↓
+Execute Command
+   ↓
+Read Data using DataReader
+   ↓
+Close Reader
+   ↓
+Close Connection
+
+🔹 Connected Architecture Example
+
+using Microsoft.Data.SqlClient;
+
+SqlConnection con = new SqlConnection(
+ "Data Source=.;Initial Catalog=TestDB;Integrated Security=True");
+
+SqlCommand cmd = new SqlCommand(
+ "SELECT * FROM Employees", con);
+
+con.Open();   // connection stays open
+
+SqlDataReader dr = cmd.ExecuteReader();
+
+while (dr.Read())
+{
+    Console.WriteLine(dr["Name"]);
+}
+
+dr.Close();
+con.Close();
+
+🔹 Characteristics
+| Feature     | Connected      |
+| ----------- | -------------- |
+| Connection  | Always open    |
+| Speed       | Very fast      |
+| Memory      | Low            |
+| Data Access | Read-only      |
+| Data Update | Not allowed    |
+| Best For    | Real-time data |
+```
+
+2️⃣ Disconnected ADO.NET Architecture
+```
+🔹 What is Disconnected Architecture?
+Connection opens only while fetching data
+Data stored in memory (DataSet/DataTable)
+Connection is closed immediately
+Uses SqlDataAdapter
+
+🔹 Components Used
+SqlConnection
+SqlCommand
+SqlDataAdapter
+DataSet
+DataTable
+
+🔹 Flow (Exam-Friendly)
+Open Connection
+   ↓
+Fetch Data using DataAdapter
+   ↓
+Store in DataSet/DataTable
+   ↓
+Close Connection
+   ↓
+Work on Data Offline
+
+🔹 Disconnected Architecture Example
+using Microsoft.Data.SqlClient;
+using System.Data;
+
+SqlConnection con = new SqlConnection(
+ "Data Source=.;Initial Catalog=TestDB;Integrated Security=True");
+
+SqlDataAdapter da = new SqlDataAdapter(
+ "SELECT * FROM Employees", con);
+
+DataSet ds = new DataSet();
+
+da.Fill(ds, "Employees");  // connection auto open & close
+
+DataTable dt = ds.Tables["Employees"];
+
+foreach (DataRow row in dt.Rows)
+{
+    Console.WriteLine(row["Name"]);
+}
+
+| Feature     | Disconnected           |
+| ----------- | ---------------------- |
+| Connection  | Closed after fetch     |
+| Speed       | Slower than DataReader |
+| Memory      | Higher                 |
+| Data Access | Read & Write           |
+| Data Update | Allowed                |
+| Best For    | Web apps, offline work |
+```
+
+| Feature        | Connected     | Disconnected |
+| -------------- | ------------- | ------------ |
+| Main Object    | SqlDataReader | DataSet      |
+| Connection     | Always open   | Closed early |
+| Mode           | Online        | Offline      |
+| Performance    | High          | Medium       |
+| Update Support |  No           |  Yes         |
+| Network Load   | High          | Low          |
+| Use Case       | Live data     | Web apps     |
 
 
 
