@@ -984,3 +984,347 @@ Reusable (Helpers) <br>
 Scalable (Async) <br>
 Safe (Error Handling) <br>
 Powerful (Filters) <br>
+
+<hr>
+
+## MVC Security 
+- MVC Security protects your application from unauthorized access and common web attacks.
+
+*1️⃣ Authorize & AllowAnonymous Attributes*
+[Authorize]
+- Restricts access to authenticated users.
+```
+[Authorize]
+public IActionResult Dashboard()
+{
+    return View();
+}
+```
+- Only logged-in users can access this action.
+
+You can also restrict by role:
+```
+[Authorize(Roles = "Admin")]
+public IActionResult AdminPanel()
+{
+    return View();
+}
+```
+[AllowAnonymous]
+- Allows access even when the controller is secured.
+```
+[Authorize]
+public class AccountController : Controller
+{
+    [AllowAnonymous]
+    public IActionResult Login()
+    {
+        return View();
+    }
+}
+```
+
+*2️⃣ Forms Based Authentication*
+- Used to authenticate users via a login form.
+```
+Steps:
+User enters username/password
+Server validates credentials
+On success, create an authentication cookie
+
+Example:
+if (userIsValid)
+{
+    FormsAuthentication.SetAuthCookie(username, false);
+    return RedirectToAction("Dashboard");
+}
+
+Logout:
+FormsAuthentication.SignOut();
+
+This cookie identifies the user for future requests.
+```
+
+*3️⃣ Preventing Forgery Attack (CSRF)*
+- CSRF (Cross-Site Request Forgery) is a security attack in which a malicious website tricks a logged-in user’s browser into sending a request to your website without the user’s knowledge.
+- Use Anti-Forgery Token to ensure the request is genuine.
+```
+Example scenario:
+User logs in to bank.com
+User visits a malicious site evil.com
+evil.com secretly sends a request to bank.com/Transfer?amount=10000
+Because the user is already logged in, the request is accepted
+👉 Money gets transferred without user intent
+```
+CSRF Protection in ASP.NET MVC
+- ASP.NET MVC protects against CSRF using Anti-Forgery Tokens.
+```
+In View (Form)
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <input asp-for="Name" />
+    <button type="submit">Save</button>
+</form>
+
+This generates a hidden token:
+<input type="hidden" name="__RequestVerificationToken" value="xyz..." />
+
+In Controller
+[HttpPost]
+[ValidateAntiForgeryToken]
+public IActionResult Create(Student s)
+{
+    return Content("Saved");
+}
+
+Now:
+MVC checks the token
+If the request comes from another site → token is missing/invalid
+MVC throws error and blocks the request
+```
+| Term                         | Purpose                          |
+| ---------------------------- | -------------------------------- |
+| `@Html.AntiForgeryToken()`   | Generates security token in form |
+| `[ValidateAntiForgeryToken]` | Verifies token on POST action    |
+| CSRF Protection              | Prevents fake/forged requests    |
+
+*4️⃣ Preventing Cross-Site Scripting (XSS)*
+- XSS (Cross-Site Scripting) is an attack where a user injects malicious JavaScript/HTML into your web app, and that script runs in another user’s browser.
+```
+Example attack input:
+<script>alert('Hacked');</script>
+If your application displays this without protection, the script executes.
+
+How ASP.NET MVC Prevents XSS
+ASP.NET MVC has built-in HTML encoding, which automatically converts:
+<script> <br>
+into: <br>
+&lt;script&gt;
+
+So it is shown as text, not executed. 
+Safe by Default
+
+In Razor View: @Model.Name
+    
+MVC automatically encodes it.
+So even if Name contains <script>, it will not run.
+
+What NOT to Do
+@Html.Raw(Model.Name)   // ❌ Dangerous
+
+Html.Raw() disables encoding and allows script execution.
+Best Practices to Prevent XSS
+Never trust user input
+Always display using Razor:
+
+@Model.Comment   // Safe
+
+Avoid Html.Raw() unless absolutely needed
+
+Use validation:
+
+[Required]
+[StringLength(50)]
+public string? Name { get; set; }
+
+Encode manually if needed:
+@Html.Encode(Model.Name)
+```
+So, XSS protection in MVC works mainly by:
+- Automatic HTML encoding
+- Avoiding raw output
+- Validating input
+- This keeps malicious scripts from running in the browser.
+
+
+<hr>
+
+## Entity Framework
+
+- Entity Framework (EF) is an Object–Relational Mapper (ORM) for .NET.
+- It lets you work with database data using C# classes instead of SQL, making development faster and safer.
+
+*1️⃣ Introduction to EF*
+```
+With EF:
+Tables → C# Classes
+Rows → Objects
+Columns → Properties
+
+You write:
+context.Students.Add(student);
+context.SaveChanges();
+
+Instead of:
+INSERT INTO Students VALUES (...)
+```
+- Benefits:
+Less SQL code <br>
+Strong typing <br>
+Faster development <br>
+Easy maintenance <br>
+
+*2️⃣ Different Approaches*
+- EF supports three approaches:
+
+| Approach           | Description                         |
+| ------------------ | ----------------------------------- |
+| **Database First** | DB already exists → generate models |
+| **Model First**    | Design model → generate DB          |
+| **Code First**     | Write C# classes → EF creates DB    |
+- Most modern projects use Code First.
+
+*3️⃣ Code First Approach*
+Create a model:
+```
+public class Student
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+```
+Create DbContext:
+```
+public class AppDbContext : DbContext
+{
+    public DbSet<Student> Students { get; set; }
+}
+```
+- EF automatically creates the Students table.
+- DbContext itself is a class provided by Entity Framework. (using Microsoft.EntityFrameworkCore;)
+
+*4️⃣ Data Annotations*
+- Used to control table structure and validation.
+```
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+public class Student
+{
+    [Key]
+    public int Id { get; set; }
+
+    [Required]
+    [MaxLength(50)]
+    public string Name { get; set; }
+
+    [Range(18, 60)]
+    public int Age { get; set; }
+}
+
+Common attributes:
+[Key]
+[Required]
+[MaxLength]
+[Range]
+[Table]
+[Column]
+````
+
+*5️⃣ Primary Key, Foreign Key, Validation*
+```
+public class Course
+{
+    public int CourseId { get; set; }
+    public string Title { get; set; }
+}
+
+public class Student
+{
+    public int Id { get; set; }
+
+    [Required]
+    public string Name { get; set; }
+
+    public int CourseId { get; set; }   // FK
+    public Course Course { get; set; }  // Navigation
+}
+
+CourseId → Foreign Key
+Course → Navigation property
+```
+
+*6️⃣ Fluent API*
+- Fluent API in Entity Framework is another way to configure your database mapping and rules using code instead of attributes.
+- It is written inside the DbContext class using the OnModelCreating() method.
+  
+```
+It is used when:
+- You need more control than Data Annotations
+- You don’t want to modify Model classes
+- You want advanced configuration (table name, keys, relations, size, etc.)
+```
+
+- Example
+```
+- Model
+public class Student
+{
+    public int StudentId { get; set; }
+    public string? Name { get; set; }
+    public int Age { get; set; }
+}
+
+- DbContext with Fluent API:
+
+using Microsoft.EntityFrameworkCore;
+public class SchoolContext : DbContext
+{
+    public DbSet<Student> Students { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Student>(entity =>
+        {
+            entity.ToTable("StudentTable");           // Table name
+            entity.HasKey(e => e.StudentId);          // Primary Key
+            entity.Property(e => e.Name)
+                  .IsRequired()                       // NOT NULL
+                  .HasMaxLength(50);                  // Size
+            entity.Property(e => e.Age)
+                  .HasDefaultValue(18);               // Default value
+        });
+    }
+}
+
+So the key classes used for Fluent API are:
+DbContext – where Fluent API is written
+ModelBuilder – used to configure entities
+EntityTypeBuilder<T> – used when configuring a specific entity
+```
+
+*7️⃣ Database Migrations*
+- Migrations keep DB in sync with models.
+```
+Commands:
+Add-Migration InitialCreate
+Update-Database
+
+Workflow:
+Change model --> Add-Migration --> Update-Database
+
+EF updates the database automatically.
+```
+
+*8️⃣ CRUD using EF*
+```
+// CREATE
+context.Students.Add(new Student { Name = "Ashitosh", Age = 20 });
+context.SaveChanges();
+
+// READ
+var list = context.Students.ToList();
+
+// UPDATE
+var s = context.Students.Find(1);
+s.Name = "Rahul";
+context.SaveChanges();
+
+// DELETE
+var d = context.Students.Find(1);
+context.Students.Remove(d);
+context.SaveChanges();
+```
+
+Entity Framework makes data access simple, clean, and powerful, and is the standard choice for MVC and .NET Core applications.
